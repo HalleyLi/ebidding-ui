@@ -1,2 +1,2 @@
 # ebidding-ui
-ebidding ui
+ebidding ui, Hello world
