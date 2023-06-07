@@ -1,1 +1,34 @@
-<p>login works!</p>
+<div class="login-form-wrap">
+    <form class="login-form" nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <nz-tabset [nzAnimated]="false">
+        <nz-tab nzTitle="User/Pasword Login">
+          <nz-form-item>
+            <nz-form-control nzErrorTip="username: test-client">
+              <nz-input-group nzPrefixIcon="user" [nzSize]="'large'">
+                <input type="text" formControlName="userName" nz-input placeholder="User Name" [placeholder]="'username...'" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="password: 123456">
+              <nz-input-group nzPrefixIcon="lock" [nzSize]="'large'">
+                <input type="password" autocomplete="on" formControlName="password" nz-input placeholder="密码" [placeholder]="'password...'" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-tab>
+      </nz-tabset>
+      <div class="login-form-margin" nz-row>
+        <div nz-col [nzSpan]="12">
+          <label formControlName="remember" nz-checkbox>
+            <span>auto login</span>
+          </label>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <a class="login-form-forgot">forget password</a>
+        </div>
+      </div>
+      <button class="login-form-button login-form-margin" nz-button nzSize="large" [nzType]="'primary'">Login</button>
+    </form>
+  </div>
+  

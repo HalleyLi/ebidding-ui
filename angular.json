@@ -35,10 +35,26 @@
               }
             ],
             "styles": [
-              "src/theme.less",
-              "src/styles.scss"
+              {
+                "input": "src/styles/default.less",
+                "bundleName": "default",
+                "inject": false
+              },
+              {
+                "input": "src/styles/dark.less",
+                "bundleName": "dark",
+                "inject": false
+              }
             ],
-            "scripts": []
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles/themes"]
+            },
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "mockjs",
+              "lodash",
+              "qs"
+            ]
           },
           "configurations": {
             "production": {
