@@ -49,7 +49,6 @@ export class NavBarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private userInfoService: UserInfoService,
     private menuServices: MenuStoreService,
     private splitNavStoreService: SplitNavStoreService,
     private activatedRoute: ActivatedRoute,
@@ -73,17 +72,13 @@ export class NavBarComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     );
 
-    // 监听混合模式下左侧菜单数据源
     this.subMixiModeSideMenu();
-    // 监听折叠菜单事件
     this.subIsCollapsed();
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
         tap(() => {
           this.subTheme$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-            // 主题切换为混合模式下，设置左侧菜单数据源
-            // 如果放在ngInit监听里面，会在混合模式下，刷新完页面切换路由，runOutSideAngular
             if (this.isMixiMode) {
               this.setMixModeLeftMenu();
             }

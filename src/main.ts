@@ -13,6 +13,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import interceptors from '@app/core/services/interceptors';
 import { ThemeSkinService } from '@app/core/services/theme-skin.service';
 import './mock';
+import { InitThemeService } from '@app/core/services/init-theme.service';
 
 const icons = [MenuFoldOutline, MenuUnfoldOutline, DashboardOutline, FormOutline];
 
@@ -27,7 +28,17 @@ const ROUTES: Route[] = [
   { path: '**', redirectTo: '/login' },
 ];
 
+export function InitThemeServiceFactory(initThemeService: InitThemeService) {
+  return async () => await initThemeService.initTheme();
+}
+
 const APPINIT_PROVIDES = [
+  {
+    provide: APP_INITIALIZER,
+    useFactory: InitThemeServiceFactory,
+    deps: [InitThemeService],
+    multi: true
+  },
   {
     provide: APP_INITIALIZER,
     useFactory: (themeService: ThemeSkinService) => () => {
@@ -35,7 +46,7 @@ const APPINIT_PROVIDES = [
     },
     deps: [ThemeSkinService],
     multi: true
-  }
+  },
 ];
 
 if (environment.production) {

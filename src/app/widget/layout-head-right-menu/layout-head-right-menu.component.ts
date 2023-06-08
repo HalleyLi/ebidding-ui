@@ -47,11 +47,11 @@ export class LayoutHeadRightMenuComponent implements OnInit {
     this.windowServe.clearStorage();
     this.windowServe.clearSessionStorage();
     this.loginOutService.loginOut();
-    this.message.success('clear cache successfully, please login again');
+    this.message.success('Clear cache successfully, please login again!');
   }
 
   showMessage(): void {
-    this.message.info('switch successfully');
+    this.message.info('Switch successfully');
   }
 
   goLogin(): void {

@@ -12,9 +12,6 @@ import { UserInfoService } from './store/userInfo.service';
 import { MenuStoreService } from './store/menu-store.service';
 import { WindowService } from './window.service';
 
-/*
- * 退出登录
- * */
 @Injectable({
   providedIn: 'root'
 })

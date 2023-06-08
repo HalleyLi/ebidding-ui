@@ -56,7 +56,7 @@ export class SettingDrawerComponent implements OnInit {
   isNightTheme$ = this.themesService.getIsNightTheme();
   _isNightTheme = false;
   _themesOptions: SettingInterface = {
-    theme: 'dark',
+    theme: 'light',
     color: '#1890FF',
     mode: 'side',
     fixedTab: false,
@@ -192,7 +192,6 @@ export class SettingDrawerComponent implements OnInit {
     this.themeSkinService.toggleTheme().then();
   }
 
-  // 选择一个isChecked为true,其他为false
   selOne(item: NormalModel, itemArray: NormalModel[]): void {
     itemArray.forEach(_item => (_item.isChecked = false));
     item.isChecked = true;
@@ -205,20 +204,17 @@ export class SettingDrawerComponent implements OnInit {
     this.setThemeOptions();
   }
 
-  // 切换主题
   changeTheme(themeItem: Theme): void {
     this.selOne(themeItem, this.themes);
     this._themesOptions.theme = themeItem.key;
     this.setThemeOptions();
   }
 
-  // 设置主题参数
   setThemeOptions(): void {
     this.themesService.setThemesMode(this._themesOptions);
     this.windowServe.setStorage(ThemeOptionsKey, JSON.stringify(this._themesOptions));
   }
 
-  // 修改固定头部
   changeFixed(isTrue: boolean, type: 'isShowTab' | 'splitNav' | 'fixedTab' | 'fixedLeftNav' | 'fixedHead' | 'hasTopArea' | 'hasFooterArea' | 'hasNavArea' | 'hasNavHeadArea'): void {
     // 非固定头部时，设置标签也不固定
     if (type === 'fixedHead' && !isTrue) {
