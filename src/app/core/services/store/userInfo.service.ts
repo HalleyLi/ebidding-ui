@@ -12,6 +12,25 @@ export class UserInfoService {
 
   constructor() {}
 
+  parsToken(token: string): UserInfo {
+    const helper = new JwtHelperService();
+    try {
+      const { role, userId, id } = helper.decodeToken(token);
+      return {
+        role,
+        name:userId,
+        id,
+        token
+      } as UserInfo;
+    } catch (e) {
+      return {
+        role: '',
+        name: 'guest',
+        token
+      } as UserInfo;
+    }
+  }
+
   setUserInfo(userInfo: UserInfo): void {
     this.userInfo$.next(userInfo);
   }

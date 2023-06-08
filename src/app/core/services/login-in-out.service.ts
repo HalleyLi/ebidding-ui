@@ -34,6 +34,8 @@ export class LoginInOutService {
     return new Promise(resolve => {
       this.windowServe.setSessionStorage(TokenKey, TokenPre + user.token);
       this.userInfoService.setUserInfo(user);
+      const userInfo: UserInfo = this.userInfoService.parsToken(TokenPre + user.token);
+      console.log(`test role: ${userInfo.role}`);
       this.getMenuByRole(user.role)
         .pipe(
           finalize(() => {
