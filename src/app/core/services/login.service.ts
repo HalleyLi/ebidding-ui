@@ -11,7 +11,7 @@ export enum Role {
 };
 
 export interface LoginParams {
-  userName: string;
+  username: string;
   password: string;
 }
 

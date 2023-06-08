@@ -1,18 +1,10 @@
 {
   "/site": {
-    "target": "http://1.117.181.242:8003/",
+    "target": "http://localhost:8081/",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
       "^/site": ""
-    }
-  },
-  "/localhost": {
-    "target": "http://localhost:4201/",
-    "secure": false,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/localhost": "/"
     }
   }
 }

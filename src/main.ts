@@ -12,8 +12,8 @@ import { environment } from '@env/environment';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import interceptors from '@app/core/services/interceptors';
 import { ThemeSkinService } from '@app/core/services/theme-skin.service';
-import './mock';
 import { InitThemeService } from '@app/core/services/init-theme.service';
+// import './mock';
 
 const icons = [MenuFoldOutline, MenuUnfoldOutline, DashboardOutline, FormOutline];
 
