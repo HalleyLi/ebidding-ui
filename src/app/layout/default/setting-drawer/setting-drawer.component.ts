@@ -16,7 +16,6 @@ import { NzListModule } from 'ng-zorro-antd/list';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { LoginInOutService } from '@app/core/services/login-in-out.service';
 import { SettingInterface, ThemeService } from '@app/core/services/store/theme.service';
 import { ThemeSkinService } from '@app/core/services/theme-skin.service';
 import { WindowService } from '@app/core/services/window.service';
@@ -78,13 +77,13 @@ export class SettingDrawerComponent implements OnInit {
     {
       key: 'dark',
       image: '/assets/imgs/theme-dark.svg',
-      title: '暗色菜单风格',
+      title: 'Dark Menu',
       isChecked: true
     },
     {
       key: 'light',
       image: '/assets/imgs/theme-light.svg',
-      title: '亮色菜单风格',
+      title: 'Light Menu',
       isChecked: false
     }
   ];
@@ -92,49 +91,49 @@ export class SettingDrawerComponent implements OnInit {
     {
       key: 'dust',
       color: '#F5222D',
-      title: '薄暮',
+      title: 'dust',
       isChecked: false
     },
     {
       key: 'volcano',
       color: '#FA541C',
-      title: '火山',
+      title: 'volcano',
       isChecked: false
     },
     {
       key: 'sunset',
       color: '#FAAD14',
-      title: '日暮',
+      title: 'sunset',
       isChecked: false
     },
     {
       key: 'cyan',
       color: '#13C2C2',
-      title: '明青',
+      title: 'cyan',
       isChecked: false
     },
     {
       key: 'green',
       color: '#52C41A',
-      title: '极光绿',
+      title: 'green',
       isChecked: false
     },
     {
       key: 'daybreak',
       color: '#1890FF',
-      title: '拂晓蓝（默认）',
+      title: 'daybreak',
       isChecked: true
     },
     {
       key: 'geekblue',
       color: '#2F54EB',
-      title: '极客蓝',
+      title: 'geekblue',
       isChecked: false
     },
     {
       key: 'purple',
       color: '#722ED1',
-      title: '酱紫',
+      title: 'purple',
       isChecked: false
     }
   ];
@@ -142,19 +141,19 @@ export class SettingDrawerComponent implements OnInit {
     {
       key: 'side',
       image: '/assets/imgs/menu-side.svg',
-      title: '侧边菜单布局',
+      title: 'side menu layout',
       isChecked: true
     },
     {
       key: 'top',
       image: '/assets/imgs/menu-top.svg',
-      title: '顶部菜单布局',
+      title: 'top menu layout',
       isChecked: false
     },
     {
       key: 'mixi',
       image: '/assets/imgs/menu-top.svg',
-      title: '混合菜单布局',
+      title: 'mixed menu layout',
       isChecked: false
     }
   ];
@@ -185,7 +184,6 @@ export class SettingDrawerComponent implements OnInit {
     this.setThemeOptions();
   }
 
-  // 修改黑夜主题
   changeNightTheme(isNight: boolean): void {
     this.windowServe.setStorage(IsNightKey, `${isNight}`);
     this.themesService.setIsNightTheme(isNight);
@@ -216,7 +214,6 @@ export class SettingDrawerComponent implements OnInit {
   }
 
   changeFixed(isTrue: boolean, type: 'isShowTab' | 'splitNav' | 'fixedTab' | 'fixedLeftNav' | 'fixedHead' | 'hasTopArea' | 'hasFooterArea' | 'hasNavArea' | 'hasNavHeadArea'): void {
-    // 非固定头部时，设置标签也不固定
     if (type === 'fixedHead' && !isTrue) {
       this._themesOptions['fixedTab'] = false;
     }
@@ -225,7 +222,6 @@ export class SettingDrawerComponent implements OnInit {
 
   }
 
-  // 修改特殊主题，色弱主题，灰色主题
   changeSpecialTheme(e: boolean, themeType: SpecialTheme): void {
     const name = this.doc.getElementsByTagName('html');
     const theme = fnFormatToHump(themeType);
@@ -244,7 +240,6 @@ export class SettingDrawerComponent implements OnInit {
       this._themesOptions = res;
     });
 
-    // 特殊模式主题变换（色弱模式，灰色模式）
     (['grey-theme', 'color-weak'] as SpecialTheme[]).forEach(item => {
       const specialTheme = fnFormatToHump(item);
       this.changeSpecialTheme(this._themesOptions[specialTheme as SpecialThemeHump], item);

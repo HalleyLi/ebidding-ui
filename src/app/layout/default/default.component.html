@@ -1,15 +1,15 @@
 <app-def-layout-content>
-  <!--sider模式sider-->
+  <!--sider sider-->
   <ng-container sider>
     <app-side-nav *ngIf="isOverMode || (themeOptions$ | async)!.mode === 'side'" />
   </ng-container>
 
-  <!--sider模式header-->
+  <!--sider header-->
   <ng-container sider-header>
     <ng-container *ngTemplateOutlet="headerTpl" />
   </ng-container>
 
-  <!--top模式header-->
+  <!--top header-->
   <ng-container top-header>
     <ng-container *ngTemplateOutlet="headerTpl" />
   </ng-container>
@@ -36,7 +36,7 @@
     </app-tool-bar>
   </ng-template>
 
-  <!--混合模式header-->
+  <!--mixed header-->
   <ng-container mixheader>
     <app-tool-bar>
       <ng-container *ngIf="isOverMode" left>
@@ -58,7 +58,7 @@
     </app-tool-bar>
   </ng-container>
 
-  <!--混合模式sider-->
+  <!--mixed sider-->
   <ng-container mixsider>
     <div class="mix-sider-height" style="overflow: hidden auto"><app-nav-bar [isMixiLeft]="(themeOptions$ | async)!.splitNav" /></div>
   </ng-container>

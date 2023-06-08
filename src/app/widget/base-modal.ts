@@ -82,11 +82,6 @@ export class ModalWrapService {
     return +getComputedStyle(element, null).zIndex;
   }
 
-  /**
-   * 获取所有对话框最大值,并确定是否需要修改
-   *
-   * @param wrapElement 待修改z-index 容器
-   */
   getModalMaxZIndex(wrapElement: HTMLElement): ModalZIndex {
     return this.bsModalService.openModals.reduce<ModalZIndex>(
       (prev, modal) => {
@@ -105,7 +100,6 @@ export class ModalWrapService {
     );
   }
 
-  // 当对话框面板时,设置当前对话框z-index为最大
   protected setMaxZIndex(wrapElement: HTMLElement): void {
     wrapElement.addEventListener(
       'mousedown',
@@ -128,7 +122,6 @@ export class ModalWrapService {
     if (modalZIndex.canChange) {
       wrapElement.style.zIndex = `${modalZIndex.zIndex + 1}`;
     }
-    // this.fixedWrapElementStyle(wrapElement);
     this.setMaxZIndex(wrapElement);
     if (handle) {
       handle.className += ' hand-model-move';
@@ -141,7 +134,6 @@ export class ModalWrapService {
     wrapElement.style.pointerEvents = 'none';
   }
 
-  // 创建对话框的配置项
   createModalConfig(component: Type<NzSafeAny>, modalOptions: ModalOptions = {}, params: object = {}, wrapCls: string): ModalOptions {
     const defaultOptions: ModalOptions = {
       nzTitle: '',
@@ -171,7 +163,7 @@ export class ModalWrapService {
       nzWidth: 720,
       nzComponentParams: {
         params
-      } // 参数中的属性将传入nzContent实例中
+      } 
     };
     const newOptions = _.merge(defaultOptions, modalOptions);
     newOptions.nzWrapClassName = `${newOptions.nzWrapClassName || ''} ${wrapCls}`;
