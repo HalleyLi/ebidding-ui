@@ -7,8 +7,6 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NZ_I18N } from 'ng-zorro-antd/i18n';
-import { en_US } from 'ng-zorro-antd/i18n';
 import { PreloaderService } from './core/services/preloader.service';
 import { SpinService } from './core/services/store/spin.service';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
@@ -40,9 +38,6 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     AsyncPipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    { provide: NZ_I18N, useValue: en_US },
-  ],
 })
 export class AppComponent implements OnInit, AfterViewInit{
   loading$ = this.spinService.getCurrentGlobalSpinStore();

@@ -4,12 +4,11 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { ActionCode } from '@config/actionCode';
 import { TokenKey, TokenPre } from '@config/constant';
 import { Menu } from '@core/services/types';
 import { fnFlatDataHasParentToTree } from '@utils/treeTableTools';
-import { Account, LoginService } from './login.service';
-import { UserInfoService, UserInfo } from './store/userInfo.service';
+import { UserInfo, LoginService } from './login.service';
+import { UserInfoService } from './store/userInfo.service';
 import { MenuStoreService } from './store/menu-store.service';
 import { WindowService } from './window.service';
 
@@ -30,19 +29,15 @@ export class LoginInOutService {
     private windowServe: WindowService
   ) {}
 
-  getMenuByUserId(userId: number): Observable<Menu[]> {
-    return this.loginService.getMenuByUserId(userId);
+  getMenuByRole(role: string): Observable<Menu[]> {
+    return this.loginService.getMenuByUserId(role);
   }
 
-  loginIn(user: Account): Promise<void> {
+  loginIn(user: UserInfo): Promise<void> {
     return new Promise(resolve => {
       this.windowServe.setSessionStorage(TokenKey, TokenPre + user.token);
-      const userInfo: UserInfo = this.userInfoService.parsToken(TokenPre + user);
-      //TODO remove it
-      userInfo.authCode.push(ActionCode.TabsDetail);
-      userInfo.authCode.push(ActionCode.SearchTableDetail);
-      this.userInfoService.setUserInfo(userInfo);
-      this.getMenuByUserId(userInfo.userId)
+      this.userInfoService.setUserInfo(user);
+      this.getMenuByRole(user.role)
         .pipe(
           finalize(() => {
             resolve();
@@ -61,8 +56,6 @@ export class LoginInOutService {
         });
     });
   }
-
-
 
   loginOut() {
     this.router.navigate(['/login']);

@@ -1,10 +1,9 @@
-import { Inject, Injectable } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
-// import { MENU_TOKEN } from '@config/menu';
 import { Menu } from '@core/services/types';
 import { BaseHttpService } from './base-http.service';
-import { MENU_TOKEN } from '@app/config/menu';
+import { CLIENT_MENUS, SALES_MENUS } from '@app/config/menu';
 
 export enum Role {
   SALES = "TRADER",
@@ -12,7 +11,7 @@ export enum Role {
 };
 
 export interface LoginParams {
-  username: string;
+  userName: string;
   password: string;
 }
 
@@ -28,12 +27,12 @@ export interface LogoutResult {
   token: string;
 }
 
-export interface Account {
-  id: string;
+export interface UserInfo {
+  id?: string;
   name: string;
-  memberSince: string;
+  memberSince?: string;
   role: string;
-  token: string;
+  token?: string;
 }
 
 @Injectable({
@@ -41,11 +40,10 @@ export interface Account {
 })
 export class LoginService {
   constructor(
-    public http: BaseHttpService,
-    @Inject(MENU_TOKEN) public menus: Menu[],
+    public http: BaseHttpService
   ) {}
 
-  public login(params: LoginParams): Observable<Account> {
+  public login(params: LoginParams): Observable<UserInfo> {
     return this.http.post('/api/v1/account/login', params, { needSuccessInfo: false });
   }
 
@@ -53,8 +51,14 @@ export class LoginService {
     return this.http.post('/api/v1/account/logout', params, { needSuccessInfo: false });
   }
 
-  public getMenuByUserId(userId: number): Observable<Menu[]> {
-    return of(this.menus);
+  public getMenuByUserId(role: string): Observable<Menu[]> {
+    if(role===Role.CLIENT){
+      return of(CLIENT_MENUS);
+    }
+    if(role===Role.SALES){
+      return of(SALES_MENUS);
+    }
+    return of([]);
   }
 
 }

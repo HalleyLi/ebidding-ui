@@ -1,6 +1,9 @@
 import { NgTemplateOutlet, NgIf } from '@angular/common';
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoginInOutService } from '@app/core/services/login-in-out.service';
+import { UserInfo } from '@app/core/services/login.service';
+import { UserInfoService } from '@app/core/services/store/userInfo.service';
 import { WindowService } from '@app/core/services/window.service';
 
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
@@ -30,12 +33,15 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   ]
 })
 export class LayoutHeadRightMenuComponent implements OnInit {
+  destroyRef = inject(DestroyRef);
+  user!: UserInfo;
+  
   constructor(
     private loginOutService: LoginInOutService,
     private windowServe: WindowService,
+    private userInfoService: UserInfoService,
     public message: NzMessageService,
   ) {}
-
 
   clean(): void {
     this.windowServe.clearStorage();
@@ -52,5 +58,15 @@ export class LayoutHeadRightMenuComponent implements OnInit {
     this.loginOutService.loginOut();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.userInfoService
+    .getUserInfo()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(user => {
+      this.user = {
+        name:user.name,
+        role: user.role
+      };
+    })
+  }
 }

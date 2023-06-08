@@ -18,17 +18,16 @@ import { SplitNavStoreService } from '@app/core/services/store/split-nav-store.s
 import { ThemeService } from '@app/core/services/store/theme.service';
 import { UserInfoService } from '@app/core/services/store/userInfo.service';
 import { TrackByPropertyDirective } from '@app/shared/track-by-property.directive';
-import { AuthDirective } from '@app/shared/auth.directive';
 
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, NzMenuModule, NzNoAnimationModule, NgTemplateOutlet, NgFor, TrackByPropertyDirective, NzButtonModule, NzIconModule, RouterLink, AsyncPipe, AuthDirective]
+  imports: [NgIf, NzMenuModule, NzNoAnimationModule, NgTemplateOutlet, NgFor, TrackByPropertyDirective, NzButtonModule, NzIconModule, RouterLink, AsyncPipe]
 })
 export class NavBarComponent implements OnInit {
-  @Input() isMixiHead = false; // 是混合模式顶部导航
+  @Input() isMixiHead = false; 
   @Input() isMixiLeft = false;
 
   themesOptions$ = this.themesService.getThemesMode();
@@ -45,7 +44,6 @@ export class NavBarComponent implements OnInit {
   leftMenuArray: Menu[] = [];
   menus: Menu[] = [];
   copyMenus: Menu[] = [];
-  authCodeArray: string[] = [];
   subTheme$: Observable<any>;
   destroyRef = inject(DestroyRef);
 
@@ -79,7 +77,6 @@ export class NavBarComponent implements OnInit {
     this.subMixiModeSideMenu();
     // 监听折叠菜单事件
     this.subIsCollapsed();
-    this.subAuth();
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -127,7 +124,6 @@ export class NavBarComponent implements OnInit {
           route = route.firstChild;
         }
 
-        // angular16以后可以在路由中直接设置title了
         this.titleServe.setTitle(`${routeData['title']} - Ebidding UI`);
         // 混合模式时，切换tab，让左侧菜单也相应变化
         this.setMixModeLeftMenu();
@@ -184,29 +180,14 @@ export class NavBarComponent implements OnInit {
     let currentLeftNavArray = currentTopNav.children || [];
     // 如果一级菜单下有二级菜单
     if (currentLeftNavArray.length > 0) {
-      // 当前左侧导航数组
-      /*添加了权限版*/
-      // 获取有权限的二级菜单集合（在左侧展示的）
-      currentLeftNavArray = currentLeftNavArray.filter(item => {
-        return this.authCodeArray.includes(item.code!);
-      });
-      // 如果第一个二级菜单，没有三级菜单
-      if (currentLeftNavArray.length > 0 && !currentLeftNavArray[0].children) {
+      const currentLeftNavArray = currentTopNav.children || [];
+      if (!currentLeftNavArray[0].children) {
         this.router.navigateByUrl(currentLeftNavArray[0].path!);
-      } else if (currentLeftNavArray.length > 0 && currentLeftNavArray[0].children) {
-        // 如果有三级菜单，则跳转到第一个三级菜单
+        this.splitNavStoreService.setSplitLeftNavArrayStore(currentLeftNavArray);
+      } else {
         this.router.navigateByUrl(currentLeftNavArray[0].children[0].path!);
+        this.splitNavStoreService.setSplitLeftNavArrayStore(currentLeftNavArray);
       }
-      /*添加了权限版结束*/
-      /*注释的是没有权限版*/
-      // const currentLeftNavArray = currentTopNav.children;
-      // if (!currentLeftNavArray[0].children) {
-      //   this.router.navigateByUrl(currentLeftNavArray[0].path!);
-      //   this.splitNavStoreService.setSplitLeftNavArrayStore(currentLeftNavArray);
-      // } else {
-      //   this.router.navigateByUrl(currentLeftNavArray[0].children[0].path!);
-      //   this.splitNavStoreService.setSplitLeftNavArrayStore(currentLeftNavArray);
-      // }
     }
     this.splitNavStoreService.setSplitLeftNavArrayStore(currentLeftNavArray);
   }
@@ -288,13 +269,6 @@ export class NavBarComponent implements OnInit {
     this.clickMenuItem(this.menus);
     this.clickMenuItem(this.copyMenus);
     this.closeMenuOpen(this.menus);
-  }
-
-  subAuth(): void {
-    this.userInfoService
-      .getUserInfo()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(res => (this.authCodeArray = res.authCode));
   }
 
   // 监听混合模式下左侧菜单数据源

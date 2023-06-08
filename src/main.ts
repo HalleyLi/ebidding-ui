@@ -4,13 +4,10 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { NzMessageServiceModule } from 'ng-zorro-antd/message';
 import { NzDrawerServiceModule } from 'ng-zorro-antd/drawer';
 import { NzModalModule } from 'ng-zorro-antd/modal';
-import es from '@angular/common/locales/es';
 import { AppComponent } from './app/app.component';
 import { Route, provideRouter, withInMemoryScrolling } from '@angular/router';
-import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
 import { APP_INITIALIZER, enableProdMode, importProvidersFrom } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
 import { environment } from '@env/environment';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import interceptors from '@app/core/services/interceptors';
@@ -18,8 +15,6 @@ import { ThemeSkinService } from '@app/core/services/theme-skin.service';
 import './mock';
 
 const icons = [MenuFoldOutline, MenuUnfoldOutline, DashboardOutline, FormOutline];
-
-registerLocaleData(es);
 
 const ROUTES: Route[] = [
   {
@@ -55,7 +50,6 @@ bootstrapApplication(AppComponent, {
         scrollPositionRestoration: 'top'
       }),
       ),
-    { provide: NZ_I18N, useValue: zh_CN },
     { provide: NZ_ICONS, useValue: icons },
     importProvidersFrom(NzMessageServiceModule, NzDrawerServiceModule, NzModalModule),
     provideAnimations(),

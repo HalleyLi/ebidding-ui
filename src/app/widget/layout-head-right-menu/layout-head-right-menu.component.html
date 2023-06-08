@@ -3,7 +3,7 @@
   <div id="tools" class="bst-header-wrap">
     <span class="bst-header-icon" nz-dropdown [nzDropdownMenu]="userSettingMenu">
       <img class="avatar" alt="" src="assets/imgs/default_face.png" />
-      <span class="base-font-size">Hello Guests</span>
+      <span class="base-font-size">Hello {{user.name}}</span>
     </span>
     <nz-dropdown-menu #userSettingMenu>
       <ul nz-menu>
