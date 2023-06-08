@@ -1,5 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
+import { registerLocaleData } from '@angular/common';
 import { MenuFoldOutline, MenuUnfoldOutline, FormOutline, DashboardOutline } from '@ant-design/icons-angular/icons';
+import es from '@angular/common/locales/es';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { NzMessageServiceModule } from 'ng-zorro-antd/message';
 import { NzDrawerServiceModule } from 'ng-zorro-antd/drawer';
@@ -7,13 +9,16 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { AppComponent } from './app/app.component';
 import { Route, provideRouter, withInMemoryScrolling } from '@angular/router';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
+import { NZ_I18N, es_ES } from 'ng-zorro-antd/i18n';
 import { APP_INITIALIZER, enableProdMode, importProvidersFrom } from '@angular/core';
 import { environment } from '@env/environment';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import interceptors from '@app/core/services/interceptors';
 import { ThemeSkinService } from '@app/core/services/theme-skin.service';
 import { InitThemeService } from '@app/core/services/init-theme.service';
-// import './mock';
+import './mock';
+
+registerLocaleData(es);
 
 const icons = [MenuFoldOutline, MenuUnfoldOutline, DashboardOutline, FormOutline];
 
@@ -37,7 +42,7 @@ const APPINIT_PROVIDES = [
     provide: APP_INITIALIZER,
     useFactory: InitThemeServiceFactory,
     deps: [InitThemeService],
-    multi: true
+    multi: true,
   },
   {
     provide: APP_INITIALIZER,
@@ -45,7 +50,7 @@ const APPINIT_PROVIDES = [
       return themeService.loadTheme();
     },
     deps: [ThemeSkinService],
-    multi: true
+    multi: true,
   },
 ];
 
@@ -58,15 +63,15 @@ bootstrapApplication(AppComponent, {
     provideRouter(
       [...ROUTES],
       withInMemoryScrolling({
-        scrollPositionRestoration: 'top'
-      }),
-      ),
+        scrollPositionRestoration: 'top',
+      })
+    ),
+    { provide: NZ_I18N, useValue: es_ES },
     { provide: NZ_ICONS, useValue: icons },
     importProvidersFrom(NzMessageServiceModule, NzDrawerServiceModule, NzModalModule),
     provideAnimations(),
     ...interceptors,
     ...APPINIT_PROVIDES,
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 }).catch((err) => console.error(err));
-

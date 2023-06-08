@@ -13,12 +13,6 @@ export interface OptionsInterface {
   label: string;
 }
 
-export interface SearchCommonVO<T> {
-  pageNum: number;
-  pageSize: number;
-  filters?: T;
-}
-
 export interface PageInfo<T> {
   pageNum: number;
   pageSize: number;

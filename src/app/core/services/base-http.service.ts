@@ -9,15 +9,10 @@ import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import * as qs from 'qs';
 
-export interface HttpCustomConfig {
-  needSuccessInfo?: boolean; 
-  showLoading?: boolean; 
-  otherUrl?: boolean; 
-}
 
 export interface ActionResult<T> {
   code: number | string;
-  msg: string;
+  message: string;
   data: T;
 }
 
@@ -28,57 +23,40 @@ export class BaseHttpService {
   uri: string;
 
   protected constructor(public http: HttpClient, public message: NzMessageService) {
-    this.uri = environment.production ? localUrl : 'site';
+    this.uri = environment.production ? localUrl : '';
   }
 
-  get<T>(path: string, param?: NzSafeAny, config?: HttpCustomConfig): Observable<T> {
-    config = config || { needSuccessInfo: false };
-    let reqPath = this.getUrl(path, config);
+  get<T>(path: string, param?: NzSafeAny): Observable<T> {
     const params = new HttpParams({ fromString: qs.stringify(param) });
-    return this.http.get<ActionResult<T>>(reqPath, { params }).pipe(this.resultHandle<T>(config));
+    return this.http.get<ActionResult<T>>(path, { params }).pipe(this.resultHandle<T>());
   }
 
-  delete<T>(path: string, param?: NzSafeAny, config?: HttpCustomConfig): Observable<T> {
-    config = config || { needSuccessInfo: false };
-    let reqPath = this.getUrl(path, config);
+  delete<T>(path: string, param?: NzSafeAny): Observable<T> {
     const params = new HttpParams({ fromString: qs.stringify(param) });
-    return this.http.delete<ActionResult<T>>(reqPath, { params }).pipe(this.resultHandle<T>(config));
+    return this.http.delete<ActionResult<T>>(path, { params }).pipe(this.resultHandle<T>());
   }
 
-  post<T>(path: string, param?: NzSafeAny, config?: HttpCustomConfig): Observable<T> {
-    config = config || { needSuccessInfo: false };
-    let reqPath = this.getUrl(path, config);
-    return this.http.post<ActionResult<T>>(reqPath, param).pipe(this.resultHandle<T>(config));
+  post<T>(path: string, param?: NzSafeAny): Observable<T> {
+    return this.http.post<ActionResult<T>>(path, param).pipe(this.resultHandle<T>());
   }
 
-  put<T>(path: string, param?: NzSafeAny, config?: HttpCustomConfig): Observable<T> {
-    config = config || { needSuccessInfo: false };
-    let reqPath = this.getUrl(path, config);
-    return this.http.put<ActionResult<T>>(reqPath, param).pipe(this.resultHandle<T>(config));
+  put<T>(path: string, param?: NzSafeAny): Observable<T> {
+    return this.http.put<ActionResult<T>>(path, param).pipe(this.resultHandle<T>());
   }
 
-  downLoadWithBlob(path: string, param?: NzSafeAny, config?: HttpCustomConfig): Observable<NzSafeAny> {
-    config = config || { needSuccessInfo: false };
-    let reqPath = this.getUrl(path, config);
-    return this.http.post(reqPath, param, {
+  downLoadWithBlob(path: string, param?: NzSafeAny): Observable<NzSafeAny> {
+    return this.http.post(path, param, {
       responseType: 'blob',
       headers: new HttpHeaders().append('Content-Type', 'application/json')
     });
   }
 
-  getUrl(path: string, config: HttpCustomConfig): string {
-    let reqPath = this.uri + path;
-    if (config.otherUrl) {
-      reqPath = path;
-    }
-    return reqPath;
-  }
 
-  resultHandle<T>(config: HttpCustomConfig): (observable: Observable<ActionResult<T>>) => Observable<T> {
+  resultHandle<T>(): (observable: Observable<ActionResult<T>>) => Observable<T> {
     return (observable: Observable<ActionResult<T>>) => {
       return observable.pipe(
         filter(item => {
-          return this.handleFilter(item, !!config.needSuccessInfo);
+          return this.handleFilter(item);
         }),
         map(item => {
           // if (item.code !== 0) {
@@ -90,12 +68,10 @@ export class BaseHttpService {
     };
   }
 
-  handleFilter<T>(item: ActionResult<T>, needSuccessInfo: boolean): boolean {
-    if (item.code !== "SUCCESS") {
-      this.message.error(item.msg);
-    } else if (needSuccessInfo) {
-      this.message.success('Operate successfully');
-    }
+  handleFilter<T>(item: ActionResult<T>): boolean {
+    if (item?.code !== "SUCCESS") {
+      this.message.error(item.message);
+    } 
     return true;
   }
 }
