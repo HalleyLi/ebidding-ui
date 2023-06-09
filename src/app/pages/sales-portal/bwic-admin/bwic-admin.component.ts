@@ -243,7 +243,7 @@ export class BwicAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      date: [null, [Validators.required]],
+      date: [null, []],
     });
     this.initTable();
   }
