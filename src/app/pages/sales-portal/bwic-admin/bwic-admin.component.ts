@@ -19,7 +19,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { finalize } from 'rxjs';
 import { SalesPortalService } from '@app/core/services/sales-portal.service';
 import { ListResponseData, SearchParam } from '@app/models';
-import { BWICItem } from '@app/models/bwic/bwic';
+import { BWICBidItem, BWICItem } from '@app/models/bwic/bwic';
 
 @Component({
   standalone: true,
@@ -36,21 +36,26 @@ import { BWICItem } from '@app/models/bwic/bwic';
     NzIconModule,
     AntTableComponent,
     NzBadgeModule,
-    NzDatePickerModule
+    NzDatePickerModule,
   ],
   templateUrl: './bwic-admin.component.html',
 })
-export class BwicAdminComponent implements OnInit{
+export class BwicAdminComponent implements OnInit {
   @ViewChild('highLightTpl', { static: true }) highLightTpl!: TemplateRef<NzSafeAny>;
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<NzSafeAny>;
   tableConfig!: AntTableConfig;
   form!: FormGroup;
-  dataList: NzSafeAny[] = []; 
+  dataList: NzSafeAny[] = [];
 
-  constructor(private fb: FormBuilder, private modalSrv: NzModalService, public message: NzMessageService, private router: Router, private cdr: ChangeDetectorRef,
-    private salesService: SalesPortalService) {}
+  constructor(
+    private fb: FormBuilder,
+    private modalSrv: NzModalService,
+    public message: NzMessageService,
+    private cdr: ChangeDetectorRef,
+    private salesService: SalesPortalService
+  ) {}
 
-    tableChangeDectction(): void {
+  tableChangeDectction(): void {
     this.dataList = [...this.dataList];
     this.cdr.detectChanges();
   }
@@ -67,15 +72,40 @@ export class BwicAdminComponent implements OnInit{
     const params: SearchParam = {
       // ...this.form.getRawValue()
     } as SearchParam;
-    this.salesService.getAllBwics(params).pipe(finalize(() => {
-      this.tableLoading(false);
-    })).subscribe(((data:  ListResponseData<BWICItem>) => {
-      const {rows, totalElements, totalPages} = data;
-      this.dataList = [...rows];
-      this.tableConfig.total = totalElements!;
-      this.tableConfig.pageIndex = totalPages!; // TODO check
-      this.tableLoading(false);
-    }));
+    this.salesService
+      .getAllBwicsBids(params)
+      .pipe(
+        finalize(() => {
+          this.tableLoading(false);
+        })
+      )
+      .subscribe((data: ListResponseData<BWICBidItem>) => {
+        const { rows, totalElements, totalPages } = data;
+        if (rows) {
+          // format BWIC List
+          let bwicList: BWICItem[] = [];
+          rows.forEach((bwicBid) => {
+            if (bwicBid) {
+              const bwicItem: BWICItem = {
+                ...bwicBid.bwicDto,
+                top1:
+                  bwicBid.bids && bwicBid.bids[0]
+                    ? { price: bwicBid.bids[0].price, clientId: bwicBid.bids[0].clientId }
+                    : { price: null, clientId: null },
+                top2:
+                  bwicBid.bids && bwicBid.bids[1]
+                    ? { price: bwicBid.bids[1].price, clientId: bwicBid.bids[0].clientId }
+                    : { price: null, clientId: null },
+              };
+              bwicList.push(bwicItem);
+            }
+          });
+          this.dataList = [...bwicList];
+          this.tableConfig.total = totalElements!;
+          this.tableConfig.pageIndex = totalPages!; // TODO check
+        }
+        this.tableLoading(false);
+      });
   }
 
   resetForm(): void {
@@ -132,7 +162,7 @@ export class BwicAdminComponent implements OnInit{
           this.getDataList();
           this.tableLoading(false);
         }, 3000);
-      }
+      },
     });
   }
 
@@ -148,54 +178,66 @@ export class BwicAdminComponent implements OnInit{
     this.tableConfig = {
       headers: [
         {
-          title: '默认不显示',
-          width: 130,
-          field: 'noShow',
-          show: false
-        },
-        {
-          title: '文字很长',
-          width: 130,
-          field: 'longText',
-          showSort: true
-        },
-        {
-          title: '换行',
+          title: 'Bond Cusip',
           width: 100,
-          field: 'newline',
+          field: 'cusip',
+        },
+        {
+          title: 'Issuer',
+          width: 130,
+          field: 'issuer',
+          showSort: true,
+        },
+        {
+          title: 'Bond Owner',
+          width: 100,
+          field: 'clientId',
           notNeedEllipsis: true,
           showSort: true,
-          tdClassList: ['text-wrap']
         },
         {
-          title: '加样式',
+          title: 'Due Date',
           width: 100,
-          field: 'addStyle',
-          tdClassList: ['operate-text']
+          field: 'dueDate',
         },
         {
-          title: '自定义模板',
-          field: 'name',
-          tdTemplate: this.highLightTpl,
-          width: 140
+          title: 'Size',
+          field: 'size',
+          width: 100,
         },
         {
-          title: '对象点出来（obj.a.b）',
-          field: 'obj.a.b'
+          title: 'Top 1 Price',
+          width: 50,
+          field: 'top1.price'
         },
         {
-          title: '操作',
+          title: 'Top 1 Client',
+          width: 50,
+          field: 'top1.client'
+        },
+        {
+          title: 'Top 2 Price',
+          width: 50,
+          field: 'top2.price'
+        },
+        {
+          title: 'Top 2 Client',
+          width: 50,
+          field: 'top2.client'
+        },
+        {
+          title: 'Operate',
           tdTemplate: this.operationTpl,
           width: 120,
           fixed: true,
-          fixedDir: 'right'
-        }
+          fixedDir: 'right',
+        },
       ],
       total: 0,
       showCheckbox: true,
       loading: false,
       pageSize: 10,
-      pageIndex: 1
+      pageIndex: 1,
     };
   }
 

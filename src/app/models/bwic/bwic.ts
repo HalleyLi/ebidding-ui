@@ -21,7 +21,8 @@ export interface BWICItem {
   size: number;
   version: number;
   isOverDue: boolean;
-  bidList?: BiddingItem[];
+  top1?: {price: number | null; clientId: string | null},
+  top2?: {price: number | null; clientId: string | null},
 }
 
 export interface BwicSubmitParams {

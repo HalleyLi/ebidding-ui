@@ -44,11 +44,11 @@ export class LoginService {
   ) {}
 
   public login(params: LoginParams): Observable<UserInfo> {
-    return this.http.post('/acc/api/v1/account/login', params);
+    return this.http.post('/api/v1/account/login', params);
   }
 
   public logout(params: LogoutParams): Observable<LogoutResult> {
-    return this.http.post('/acc/api/v1/account/logout', params);
+    return this.http.post('/api/v1/account/logout', params);
   }
 
   public getMenuByUserId(role: string): Observable<Menu[]> {

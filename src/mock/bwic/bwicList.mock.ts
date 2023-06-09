@@ -1,7 +1,7 @@
 import { BWICItem } from '@app/models/bwic/bwic';
 import { intercepter, mock } from '../config';
 
-mock.mock('/bwc/api/v1/bwic/list', 'get', (config: any) => {
+mock.mock('/api/v1/bwic/list', 'get', (config: any) => {
     let allBWICs: BWICItem[] = [];
    console.log(`config.params: ${config?.params}`);
     new Array(100).forEach((item, index) => {

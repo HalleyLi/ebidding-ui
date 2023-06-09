@@ -1,18 +1,26 @@
 {
-  "/acc": {
-    "target": "http://localhost:8081/",
+  "/api/v1/bwic": {
+    "target": "http://localhost:80",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
-      "^/acc": ""
+      "^/api/v1/bwic": ""
     }
   },
-  "/bwc": {
-    "target": "http://localhost:8099/",
+  "/api/v1/bid": {
+    "target": "http://localhost:80",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
-      "^/bwc": ""
+      "^/api/v1/bid": ""
+    }
+  },
+  "/api/v1/account": {
+    "target": "http://localhost:80",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/v1/account": ""
     }
   }
 }

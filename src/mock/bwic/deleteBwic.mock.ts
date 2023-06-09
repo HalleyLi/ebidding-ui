@@ -1,7 +1,7 @@
 import { BwicCancelParams } from '@app/models/bwic/bwic';
 import { intercepter, mock } from '../config';
 
-mock.mock('site/api/v1/bwic/delete', 'post', (config: any) => {
+mock.mock('/api/v1/bwic/delete', 'post', (config: any) => {
     const body: BwicCancelParams = JSON.parse(config?.body);
     console.log("Cancel Bwic", body)
     const id = body.id;

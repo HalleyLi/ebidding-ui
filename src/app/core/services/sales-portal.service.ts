@@ -15,18 +15,14 @@ export class SalesPortalService {
     public httpClient: HttpClient
   ) {}
 
-  public getAllBwics(params: SearchParam): Observable<ListResponseData<BWICItem>> {
-    return this.httpClient.get<ListResponseData<BWICItem>>('/bwc/api/v1/bwic/list');
+  public getAllBwicsBids(params: SearchParam): Observable<ListResponseData<BWICBidItem>> {
+    return this.http.get<ListResponseData<BWICBidItem>>('/api/v1/bwic/bwic-bid-details', params);
   }
-  public getetAllBwicsBids(params: SearchParam): Observable<ListResponseData<BWICBidItem>> {
-    return this.http.post('/bwic/api/v1/bwic/bwic-bid-details', params);
-  }
-
   public submitBwic(params: BwicSubmitParams): Observable<BWICItem> {
-    return this.http.post('/bwic/api/v1/bwic/create', params);
+    return this.http.post('/api/v1/bwic/create', params);
   }
   public cancleBwic(params: BwicCancelParams): Observable<BWICItem> {
-    return this.http.post('/bwic/api/v1/bwic/delete', params);
+    return this.http.post('/api/v1/bwic/delete', params);
   }
 
 
