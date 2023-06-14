@@ -1,7 +1,6 @@
 import { NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AntTableComponent, AntTableConfig, SortFile } from '@app/shared/components/ant-table/ant-table.component';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -18,8 +17,16 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { finalize } from 'rxjs';
 import { SalesPortalService } from '@app/core/services/sales-portal.service';
-import { ListResponseData, SearchParam } from '@app/models';
+import { ListResponseData } from '@app/models';
 import { BWICBidItem, BWICItem } from '@app/models/bwic/bwic';
+
+export interface SearchParam {
+  offset: number;
+  limit: number;
+  startDate: Date;
+  endDate: Date;
+  date: any;
+}
 
 @Component({
   standalone: true,
@@ -44,7 +51,7 @@ export class BwicAdminComponent implements OnInit {
   @ViewChild('highLightTpl', { static: true }) highLightTpl!: TemplateRef<NzSafeAny>;
   @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<NzSafeAny>;
   tableConfig!: AntTableConfig;
-  form!: FormGroup;
+  searchParam: Partial<SearchParam> = {};
   dataList: NzSafeAny[] = [];
 
   constructor(
@@ -69,9 +76,13 @@ export class BwicAdminComponent implements OnInit {
     this.tableConfig.loading = true;
 
     this.tableConfig.loading = true;
-    const params: SearchParam = {
-      // ...this.form.getRawValue()
-    } as SearchParam;
+    let params: SearchParam = {} as SearchParam;
+    if (this.searchParam?.date) {
+      params = {
+        startDate: this.searchParam.date[0],
+        endDate: this.searchParam.date[1],
+      } as SearchParam;
+    }
     this.salesService
       .getAllBwicsBids(params)
       .pipe(
@@ -80,36 +91,39 @@ export class BwicAdminComponent implements OnInit {
         })
       )
       .subscribe((data: ListResponseData<BWICBidItem>) => {
-        const { rows, totalElements, totalPages } = data;
-        if (rows) {
-          // format BWIC List
-          let bwicList: BWICItem[] = [];
-          rows.forEach((bwicBid) => {
-            if (bwicBid) {
-              const bwicItem: BWICItem = {
-                ...bwicBid.bwicDto,
-                top1:
-                  bwicBid.bids && bwicBid.bids[0]
-                    ? { price: bwicBid.bids[0].price, clientId: bwicBid.bids[0].clientId }
-                    : { price: null, clientId: null },
-                top2:
-                  bwicBid.bids && bwicBid.bids[1]
-                    ? { price: bwicBid.bids[1].price, clientId: bwicBid.bids[0].clientId }
-                    : { price: null, clientId: null },
-              };
-              bwicList.push(bwicItem);
-            }
-          });
-          this.dataList = [...bwicList];
-          this.tableConfig.total = totalElements!;
-          this.tableConfig.pageIndex = totalPages!; // TODO check
+        if (data) {
+          const { rows, totalElements, totalPages } = data;
+          if (rows) {
+            // format BWIC List
+            let bwicList: BWICItem[] = [];
+            rows.forEach((bwicBid) => {
+              if (bwicBid) {
+                const bwicItem: BWICItem = {
+                  ...bwicBid.bwicDto,
+                  top1:
+                    bwicBid.bids && bwicBid.bids[0]
+                      ? { price: bwicBid.bids[0].price, clientId: bwicBid.bids[0].clientId }
+                      : { price: null, clientId: null },
+                  top2:
+                    bwicBid.bids && bwicBid.bids[1]
+                      ? { price: bwicBid.bids[1].price, clientId: bwicBid.bids[0].clientId }
+                      : { price: null, clientId: null },
+                };
+                bwicList.push(bwicItem);
+              }
+            });
+            this.dataList = [...bwicList];
+            this.tableConfig.total = totalElements!;
+            this.tableConfig.pageIndex = totalPages!; // TODO check
+          }
         }
+
         this.tableLoading(false);
       });
   }
 
   resetForm(): void {
-    this.form.reset();
+    this.searchParam = {};
     this.getDataList();
   }
 
@@ -208,22 +222,22 @@ export class BwicAdminComponent implements OnInit {
         {
           title: 'Top 1 Price',
           width: 50,
-          field: 'top1.price'
+          field: 'top1.price',
         },
         {
           title: 'Top 1 Client',
           width: 50,
-          field: 'top1.client'
+          field: 'top1.client',
         },
         {
           title: 'Top 2 Price',
           width: 50,
-          field: 'top2.price'
+          field: 'top2.price',
         },
         {
           title: 'Top 2 Client',
           width: 50,
-          field: 'top2.client'
+          field: 'top2.client',
         },
         {
           title: 'Operate',
@@ -242,9 +256,6 @@ export class BwicAdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      date: [null, []],
-    });
     this.initTable();
   }
 }

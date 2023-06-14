@@ -1,17 +1,17 @@
 <div class="normal-table-wrap">
   <nz-card class="m-b-10" [nzBodyStyle]="{ 'padding-bottom': 0 }">
-    <form nz-form [formGroup]="form">
+    <form nz-form>
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24 }">
         <div nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8">
           <nz-form-item>
             <nz-form-label nzFor="date" nzRequired [nzSm]="6" [nzXs]="24">Date Range</nz-form-label>
             <nz-form-control nzErrorTip="Please Select Data Range" [nzSm]="14" [nzXs]="24">
-              <nz-range-picker class="with-full" formControlName="date"></nz-range-picker>
+              <nz-range-picker class="with-full" name="date" [(ngModel)]="searchParam.date" ></nz-range-picker>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div class="m-b-8 text-right p-0" nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="8">
-          <button nz-button [nzType]="'primary'">
+          <button nz-button [nzType]="'primary'" (click)="getDataList()">
             <i nz-icon nzType="search"></i>
             Search
           </button>
