@@ -1,14 +1,10 @@
 import { Device } from '../layout/index.interface';
-import { MenuChild } from '../layout/menu.interface';
 import { Role } from './login';
 
 export type Locale = 'zh_CN' | 'en_US';
 
 export interface UserState {
   username: string;
-
-  /** menu list for init tagsView */
-  menuList: MenuChild[];
 
   /** login status */
   logged: boolean;
