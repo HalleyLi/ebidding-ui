@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AntTableComponent, AntTableConfig, SortFile } from '@app/shared/components/ant-table/ant-table.component';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
@@ -18,7 +18,10 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { finalize } from 'rxjs';
 import { SalesPortalService } from '@app/core/services/sales-portal.service';
 import { ListResponseData } from '@app/models';
-import { BWICBidItem, BWICItem } from '@app/models/bwic/bwic';
+import { BWICBidItem, BWICItem, BwicSubmitParams } from '@app/models/bwic/bwic';
+import { BwicModalService } from './bwic-modal/bwic-modal.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ModalBtnStatus } from '@app/widget/base-modal';
 
 export interface SearchParam {
   offset: number;
@@ -32,8 +35,8 @@ export interface SearchParam {
   standalone: true,
   imports: [
     NzCardModule,
-    ReactiveFormsModule,
     FormsModule,
+    ReactiveFormsModule,
     NzFormModule,
     NzGridModule,
     NzInputModule,
@@ -53,10 +56,11 @@ export class BwicAdminComponent implements OnInit {
   tableConfig!: AntTableConfig;
   searchParam: Partial<SearchParam> = {};
   dataList: NzSafeAny[] = [];
+  destroyRef = inject(DestroyRef);
 
   constructor(
-    private fb: FormBuilder,
     private modalSrv: NzModalService,
+    private modalService: BwicModalService,
     public message: NzMessageService,
     private cdr: ChangeDetectorRef,
     private salesService: SalesPortalService
@@ -128,13 +132,32 @@ export class BwicAdminComponent implements OnInit {
   }
 
   add(): void {
-    // this.modalService.show({nzTitle: '新增'}).subscribe((res) => {
-    //   if (!res || res.status === ModalBtnStatus.Cancel) {
-    //     return;
-    //   }
-    //   this.tableLoading(true);
-    //   this.addEditData(res.modalValue, 'addFireSys');
-    // }, error => this.tableLoading(false));
+    this.modalService
+      .show({ nzTitle: 'Add' })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(
+        res => {
+          if (!res || res.status === ModalBtnStatus.Cancel) {
+            return;
+          }
+          this.tableLoading(true);
+          this.addData(res.modalValue);
+        },
+        error => this.tableLoading(false)
+      );
+  }
+
+  addData(param:BwicSubmitParams): void {
+    this.salesService.submitBwic(param)
+      .pipe(
+        finalize(() => {
+          this.tableLoading(false);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        this.getDataList();
+      });
   }
 
   // 修改
@@ -151,16 +174,11 @@ export class BwicAdminComponent implements OnInit {
     // });
   }
 
-  // addEditData(param: FireSysObj, methodName: 'editFireSys' | 'addFireSys'): void {
-  //   this.dataService[methodName](param).subscribe(() => {
-  //     this.getDataList();
-  //   });
-  // }
 
   del(id: number): void {
     this.modalSrv.confirm({
-      nzTitle: '确定要删除吗？',
-      nzContent: '删除后不可恢复',
+      nzTitle: 'Are you sure to cancel',
+      nzContent: 'It can not be recovered after cancel',
       nzOnOk: () => {
         this.tableLoading(true);
         /*注释的是模拟接口调用*/

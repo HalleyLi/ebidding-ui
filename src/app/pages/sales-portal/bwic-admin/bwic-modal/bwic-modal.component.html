@@ -1,0 +1,32 @@
+<form nz-form [formGroup]="addEditForm">
+  <nz-form-item>
+    <nz-form-label nzFor="cusip" nzRequired [nzSm]="4" [nzXs]="24">Bond Cusip</nz-form-label>
+    <nz-form-control [nzErrorTip]="combineTpl" [nzSm]="18" [nzXs]="24">
+      <input id="cusip" formControlName="cusip" nz-input placeholder="Please Enter Bond Cusip" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="clientId" nzRequired [nzSm]="4" [nzXs]="24">Bond Owner</nz-form-label>
+    <nz-form-control [nzErrorTip]="combineTpl" [nzSm]="18" [nzXs]="24">
+      <input id="clientId" formControlName="clientId" nz-input placeholder="Please Enter Bond Owner" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="dueDate" nzRequired [nzSm]="4" [nzXs]="24">Due Date</nz-form-label>
+    <nz-form-control [nzErrorTip]="combineTpl" [nzSm]="18" [nzXs]="24">
+      <nz-date-picker formControlName="dueDate"  nzPlaceHolder="Please select date" ></nz-date-picker>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="size" nzRequired [nzSm]="4" [nzXs]="24">Size</nz-form-label>
+    <nz-form-control [nzErrorTip]="combineTpl" [nzSm]="18" [nzXs]="24">
+      <input id="size" formControlName="size" nz-input placeholder="Please Enter Size" />
+    </nz-form-control>
+  </nz-form-item>
+
+
+</form>
+<ng-template #combineTpl let-control>
+  <ng-container *ngIf="control.hasError('message')">{{ control.errors.message }}</ng-container>
+  <ng-container *ngIf="control.hasError('required')">Requred</ng-container>
+</ng-template>

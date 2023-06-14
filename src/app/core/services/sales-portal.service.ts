@@ -21,7 +21,7 @@ export class SalesPortalService {
   public submitBwic(params: BwicSubmitParams): Observable<BWICItem> {
     return this.http.post('/api/v1/bwic/create', params);
   }
-  public cancleBwic(params: BwicCancelParams): Observable<BWICItem> {
+  public deleteBwic(params: BwicCancelParams): Observable<BWICItem> {
     return this.http.post('/api/v1/bwic/delete', params);
   }
 
