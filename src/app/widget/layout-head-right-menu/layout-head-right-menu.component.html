@@ -27,8 +27,8 @@
     </span>
     <nz-dropdown-menu #language="nzDropdownMenu">
       <ul nz-menu nzSelectable>
-        <li nz-menu-item (click)="showMessage()">English</li>
-        <li nz-menu-item nzSelected (click)="showMessage()">简体中文</li>
+        <li nz-menu-item (click)='showMessage("en")'>English</li>
+        <li nz-menu-item nzSelected (click)='showMessage("zh")'>简体中文</li>
       </ul>
     </nz-dropdown-menu>
   </div>

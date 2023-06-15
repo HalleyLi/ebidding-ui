@@ -9,11 +9,11 @@ import { WindowService } from '@app/core/services/window.service';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzI18nService, zh_CN, en_US } from 'ng-zorro-antd/i18n';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-
 
 @Component({
   selector: 'app-layout-head-right-menu',
@@ -29,18 +29,19 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     NgIf,
     NzDropDownModule,
     NzBadgeModule,
-    NzMenuModule
-  ]
+    NzMenuModule,
+  ],
 })
 export class LayoutHeadRightMenuComponent implements OnInit {
   destroyRef = inject(DestroyRef);
   user!: UserInfo;
-  
+
   constructor(
     private loginOutService: LoginInOutService,
     private windowServe: WindowService,
     private userInfoService: UserInfoService,
     public message: NzMessageService,
+    private i18n: NzI18nService
   ) {}
 
   clean(): void {
@@ -50,7 +51,8 @@ export class LayoutHeadRightMenuComponent implements OnInit {
     this.message.success('Clear cache successfully, please login again!');
   }
 
-  showMessage(): void {
+  showMessage(locale: 'en' | 'zh'): void {
+    this.i18n.setLocale(locale === 'en' ? en_US : zh_CN);
     this.message.info('Switch successfully');
   }
 
@@ -60,13 +62,13 @@ export class LayoutHeadRightMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.userInfoService
-    .getUserInfo()
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(user => {
-      this.user = {
-        name:user.name,
-        role: user.role
-      };
-    })
+      .getUserInfo()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        this.user = {
+          name: user.name,
+          role: user.role,
+        };
+      });
   }
 }
