@@ -44,16 +44,6 @@ export class ModalWrapService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  fullScreenIconClick(fullStatus: boolean): void {
-    this.bsModalService.openModals.forEach(modal => {
-      if (fullStatus) {
-        this.renderer.addClass(modal.containerInstance['host'].nativeElement, 'fullscreen-modal');
-      } else {
-        this.renderer.removeClass(modal.containerInstance['host'].nativeElement, 'fullscreen-modal');
-      }
-    });
-  }
-
   protected getRandomCls(): string {
     return `NZ-MODAL-WRAP-CLS-${fnGetUUID()}`;
   }

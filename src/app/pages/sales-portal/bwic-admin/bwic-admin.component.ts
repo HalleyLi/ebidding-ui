@@ -155,7 +155,8 @@ export class BwicAdminComponent implements OnInit {
         }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(() => {
+      .subscribe((res: any) => {
+        console.log(res);
         this.getDataList();
       });
   }

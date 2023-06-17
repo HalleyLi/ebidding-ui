@@ -14,13 +14,14 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
 import { BwicSubmitParams } from '@app/models/bwic/bwic';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 @Component({
   selector: 'app-account-modal',
   templateUrl: './bwic-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [FormsModule, NzFormModule, ReactiveFormsModule, NzGridModule, NzInputModule, NgIf, NzRadioModule, NzSwitchModule, NzTreeSelectModule, NzSelectModule, NgFor]
+  imports: [FormsModule,NzDatePickerModule , NzFormModule, ReactiveFormsModule, NzGridModule, NzInputModule, NgIf, NzRadioModule, NzSwitchModule, NzTreeSelectModule, NzSelectModule, NgFor]
 })
 export class AccountModalComponent implements OnInit {
   addEditForm!: FormGroup;
@@ -51,7 +52,7 @@ export class AccountModalComponent implements OnInit {
       cusip: [null, [Validators.required]],
       clientId: [null, [Validators.required, ]],
       size: [1],
-      dueDate: [new Date()]
+      dueDate: ['']
     });
   }
 
