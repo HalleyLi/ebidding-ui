@@ -1,74 +1,89 @@
-<app-def-layout-content>
-  <!--sider sider-->
-  <ng-container sider>
-    <app-side-nav *ngIf="isOverMode || (themeOptions$ | async)!.mode === 'side'" />
-  </ng-container>
-
-  <!--sider header-->
-  <ng-container sider-header>
-    <ng-container *ngTemplateOutlet="headerTpl" />
-  </ng-container>
-
-  <!--top header-->
-  <ng-container top-header>
-    <ng-container *ngTemplateOutlet="headerTpl" />
-  </ng-container>
-
-  <ng-template #headerTpl>
+<nz-layout class="app-layout">
+  <nz-sider
+    class="menu-sidebar"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
     <app-tool-bar>
-      <ng-container *ngIf="isOverMode || (themeOptions$ | async)!.mode === 'side'; else topHeadTpl" left>
-        <i id="trigger" class="trigger" nz-icon [nzType]="(isCollapsed$ | async) ? 'menu-unfold' : 'menu-fold'" (click)="changeCollapsed()"></i>
-      </ng-container>
-      <ng-template #topHeadTpl>
-        <div class="left-start-center flex-1" style="z-index: 100">
-          <ng-container *ngIf="(themeOptions$ | async)!.hasNavHeadArea">
-            <img class="m-l-10" alt="" src="assets/imgs/logo.svg" style="max-height: 32px; max-width: 54px" />
-            <span class="sp-18 m-r-8">Ebidding UI</span>
-          </ng-container>
-          <div class="flex-1">
-            <app-nav-bar />
+      <ng-container left>
+        <div class="nav-ul-wrap">
+          <div class="left-nav-wrap" >
+            <div class="sidebar-logo" [class.p-l-8]="isCollapsed$ | async">
+              <a href="#" target="_blank">
+                <h1 class="animate-02" >Ebidding UI</h1>
+              </a>
+            </div>
+            <div class="nav-ul-wrap">
+                <ul nz-menu [nzInlineCollapsed]="isCollapsed$ | async" nzMode="inline">
+                  <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menus }"></ng-container>
+                  <ng-template #menuTpl let-menus>
+                    <ng-container *ngFor="let menu of menus; trackByProperty: 'id'">
+                      <!--first level-->
+                      <li *ngIf="!menu.children || menu.children.length === 0" nz-menu-item [nzSelected]="menu.selected">
+                        <a (click)="changeRoute($event, menu)">
+                          <i *ngIf="menu.icon" nz-icon [nzType]="menu.icon"></i>
+                          <i *ngIf="menu.alIcon" nz-icon [nzIconfont]="menu.alIcon"></i>
+                          <span>{{ menu.menuName }}</span>
+                        </a>
+                      </li>
+                      <!--second level-->
+                      <ng-container *ngIf="menu.children && menu.children.length > 0">
+                        <li nz-submenu [nzTitle]="titleTpl" [(nzOpen)]="menu.open" (nzOpenChange)="changeOpen(menu, menus)">
+                          <ng-template #titleTpl>
+                            <i *ngIf="menu.icon" nz-icon [nzType]="menu.icon"></i>
+                            <i *ngIf="menu.alIcon" nz-icon [nzIconfont]="menu.alIcon"></i>
+                            <span>{{ menu.menuName }}</span>
+                          </ng-template>
+                          <ul>
+                            <ng-container *ngFor="let menuSecond of menu.children; trackByProperty: 'id'">
+                              <li
+                                *ngIf="!menuSecond.children || menuSecond.children.length === 0"
+                                nz-menu-item
+                                [nzSelected]="menuSecond.selected"
+                              >
+                                <a (click)="changeRoute($event, menuSecond)">
+                                  <i *ngIf="menuSecond.icon" nz-icon [nzType]="menuSecond.icon"></i>
+                                  <i *ngIf="menuSecond.alIcon" nz-icon [nzIconfont]="menuSecond.alIcon"></i>
+                                  <span>{{ menuSecond.menuName }}</span>
+                                </a>
+                              </li>
+                            </ng-container>
+                          </ul>
+                        </li>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+                </ul>
+            </div>
           </div>
+        
         </div>
-      </ng-template>
+      </ng-container>
       <ng-container right>
-        <app-layout-head-right-menu />
+        <!-- <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+          <span
+            class="trigger"
+            nz-icon
+            [nzType]="(isCollapsed$ | async) ? 'menu-unfold' : 'menu-fold'"
+            (click)="changeCollapsed()"
+          ></span>
+        </span> -->
       </ng-container>
     </app-tool-bar>
-  </ng-template>
-
-  <!--mixed header-->
-  <ng-container mixheader>
-    <app-tool-bar>
-      <ng-container *ngIf="isOverMode" left>
-        <i class="trigger" nz-icon [nzType]="(isCollapsed$ | async) ? 'menu-unfold' : 'menu-fold'" (click)="changeCollapsed()"></i>
-      </ng-container>
-
-      <ng-container *ngIf="!isOverMode" left>
-        <div class="left-start-center flex-1" style="z-index: 100">
-          <img class="m-l-10" alt="" src="assets/imgs/logo.svg" style="max-height: 32px; max-width: 54px" />
-          <span class="sp-18 m-l-25 m-r-25">Ebidding UI</span>
-          <div class="flex-1">
-            <app-nav-bar *ngIf="(themeOptions$ | async)!.splitNav" [isMixiHead]="true" />
-          </div>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <app-layout-head-right-menu />
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <div [@fadeRouteAnimation]="prepareRoute(outlet)">
+          <router-outlet #outlet="outlet"></router-outlet>
         </div>
-      </ng-container>
-      <ng-container right>
-        <app-layout-head-right-menu />
-      </ng-container>
-    </app-tool-bar>
-  </ng-container>
-
-  <!--mixed sider-->
-  <ng-container mixsider>
-    <div class="mix-sider-height" style="overflow: hidden auto"><app-nav-bar [isMixiLeft]="(themeOptions$ | async)!.splitNav" /></div>
-  </ng-container>
-
-  <ng-container content>
-    <div>
-      <div [@fadeRouteAnimation]="prepareRoute(outlet)">
-        <router-outlet #outlet="outlet"></router-outlet>
       </div>
-    </div>
-  </ng-container>
-</app-def-layout-content>
-<app-nav-drawer #navDrawer />
+    </nz-content>
+  </nz-layout>
+</nz-layout>

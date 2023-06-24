@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 @Component({
   selector: 'app-tool-bar',
   template: `
-    <div class="app-header">
+    <div class="left-nav-wrap">
       <ng-content select="ng-container[left]" />
       <ng-content select="ng-container[right]" />
     </div>

@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { Theme, ThemeMode } from '@app/layout/default/setting-drawer/setting-drawer.component';
 
 export interface SettingInterface {
-  theme: Theme['key']; 
   color: string; 
-  mode: ThemeMode['key']; 
   colorWeak: boolean; 
   greyTheme: boolean; 
   fixedHead: boolean; 
@@ -27,9 +24,7 @@ export class ThemeService {
   private isNightTheme$ = new BehaviorSubject<boolean>(false);
   private isOverModeTheme$ = new BehaviorSubject<boolean>(false);
   private themesMode$ = new BehaviorSubject<SettingInterface>({
-    theme: 'dark',
     color: '#1890FF',
-    mode: 'side',
     isShowTab: true,
     colorWeak: false,
     greyTheme: false,
