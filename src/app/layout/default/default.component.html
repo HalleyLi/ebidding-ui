@@ -17,7 +17,7 @@
               </a>
             </div>
             <div class="nav-ul-wrap">
-                <ul nz-menu [nzInlineCollapsed]="isCollapsed$ | async" nzMode="inline">
+                <ul nz-menu [nzInlineCollapsed]="isCollapsed$ | async" nzMode="inline"  nzTheme="dark">
                   <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menus }"></ng-container>
                   <ng-template #menuTpl let-menus>
                     <ng-container *ngFor="let menu of menus; trackByProperty: 'id'">
@@ -80,7 +80,7 @@
     </nz-header>
     <nz-content>
       <div class="inner-content">
-        <div [@fadeRouteAnimation]="prepareRoute(outlet)">
+        <div [@fadeRouteAnimation]="prepareRoute(outlet)" class="normal-wrap">
           <router-outlet #outlet="outlet"></router-outlet>
         </div>
       </div>
