@@ -4,15 +4,14 @@ import { Observable } from 'rxjs';
 import { BaseHttpService } from '@app/core/services/base-http.service';
 import { ListResponseData, SearchParam } from '@app/models';
 import { BWICBidItem, BWICItem, BwicCancelParams, BwicSubmitParams } from '@app/models/bwic/bwic';
-import { HttpClient } from '@angular/common/http';
+import { BwicPopularItem } from '@app/models/bwic/bwic-popular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesPortalService {
   constructor(
-    public http: BaseHttpService,
-    public httpClient: HttpClient
+    public http: BaseHttpService
   ) {}
 
   public getAllBwicsBids(params: SearchParam): Observable<ListResponseData<BWICBidItem>> {
@@ -25,5 +24,8 @@ export class SalesPortalService {
     return this.http.post('/api/v1/bwic/delete', params);
   }
 
+  public getAllBwicPopularList(): Observable<BwicPopularItem[]> {
+    return this.http.get<BwicPopularItem[]>('/api/v1/bwic/popular');
+  }
 
 }
