@@ -246,7 +246,7 @@ export class BwicAdminComponent implements OnInit {
         {
           title: 'Top 1 Client',
           width: 50,
-          field: 'top1.client',
+          field: 'top1.clientId',
         },
         {
           title: 'Top 2 Price',
@@ -256,7 +256,7 @@ export class BwicAdminComponent implements OnInit {
         {
           title: 'Top 2 Client',
           width: 50,
-          field: 'top2.client',
+          field: 'top2.clientId',
         },
         {
           title: 'Operate',
